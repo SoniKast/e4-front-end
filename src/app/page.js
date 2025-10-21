@@ -49,12 +49,26 @@ export default function Dashboard() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Tableau de bord - Interventions</h1>
-        <a
-          href="/create-intervention"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Créer une intervention
-        </a>
+        <div className="flex space-x-2">
+          <a
+            href="/create-projet"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Créer un projet
+          </a>
+          <a
+            href="/create-salarie"
+            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Créer un salarié
+          </a>
+          <a
+            href="/create-intervention"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Créer une intervention
+          </a>
+        </div>
       </div>
 
       {interventions.length === 0 ? (
