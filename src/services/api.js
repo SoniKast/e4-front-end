@@ -76,4 +76,44 @@ export const apiService = {
         }
         return response.json();
     },
+
+    // Employee schedule
+    async getEmployeeSchedule(salarieId) {
+        const response = await fetch(`http://localhost:5000/interventions/salarie/${salarieId}`);
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération du planning du salarié');
+        }
+        return response.json();
+    },
+
+    // Project time summary
+    async getProjectTimeSummary(projetId) {
+        const response = await fetch(`http://localhost:5000/projets/${projetId}/time-summary`);
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération du temps restant du projet');
+        }
+        return response.json();
+    },
+    // Clients
+    async getClients() {
+        const response = await fetch("http://localhost:5000/client");
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des clients');
+        }
+        return response.json();
+    },
+
+    async createClient(clientData) {
+        const response = await fetch("http://localhost:5000/client", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(clientData),
+        });
+        if (!response.ok) {
+            throw new Error('Erreur lors de la création du client');
+        }
+        return response.json();
+    },
 };

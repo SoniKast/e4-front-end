@@ -30,6 +30,16 @@ const navigationItems = [
         href: "/create-salarie",
         icon: PersonIcon,
     },
+    {
+        name: "Planning salariés",
+        href: "/employee-schedule",
+        icon: CalendarIcon,
+    },
+    {
+        name: "Vue projets",
+        href: "/project-overview",
+        icon: FileTextIcon,
+    },
 ];
 
 export default function Sidebar() {
