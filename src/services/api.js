@@ -116,4 +116,35 @@ export const apiService = {
         }
         return response.json();
     },
+
+    // Materiels
+    async getMateriels() {
+        const response = await fetch("http://localhost:5000/materiels");
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des matériels');
+        }
+        return response.json();
+    },
+
+    async createMateriel(materielData) {
+        const response = await fetch("http://localhost:5000/materiels", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(materielData),
+        });
+        if (!response.ok) {
+            throw new Error('Erreur lors de la création du matériel');
+        }
+        return response.json();
+    },
+
+    async getMaterielsByIntervention(interventionId) {
+        const response = await fetch(`http://localhost:5000/materiels/intervention/${interventionId}`);
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des matériels de l\'intervention');
+        }
+        return response.json();
+    },
 };

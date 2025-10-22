@@ -8,10 +8,13 @@ export default function CreateIntervention() {
         date: "",
         duree: "",
         projetId: "",
-        salarieId: ""
+        salarieId: "",
+        materiels: []
     });
     const [projets, setProjets] = useState([]);
     const [salaries, setSalaries] = useState([]);
+    const [materielsList, setMaterielsList] = useState([]);
+    const [selectedMateriels, setSelectedMateriels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const router = useRouter();
@@ -22,12 +25,14 @@ export default function CreateIntervention() {
 
     const fetchData = async () => {
         try {
-            const [projetsData, salariesData] = await Promise.all([
+            const [projetsData, salariesData, materielsData] = await Promise.all([
                 apiService.getProjets(),
-                apiService.getSalaries()
+                apiService.getSalaries(),
+                apiService.getMateriels()
             ]);
             setProjets(projetsData);
             setSalaries(salariesData);
+            setMaterielsList(materielsData);
         } catch (err) {
             setError("Erreur lors du chargement des données");
             console.error("Erreur:", err);
@@ -42,6 +47,16 @@ export default function CreateIntervention() {
         }));
     };
 
+    const handleMaterielChange = (materielId) => {
+        setSelectedMateriels(prev => {
+            if (prev.includes(materielId)) {
+                return prev.filter(id => id !== materielId);
+            } else {
+                return [...prev, materielId];
+            }
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -52,7 +67,11 @@ export default function CreateIntervention() {
                 date: new Date(formData.date),
                 duree: parseInt(formData.duree),
                 projetId: parseInt(formData.projetId),
-                salarieId: parseInt(formData.salarieId)
+                salarieId: parseInt(formData.salarieId),
+                materiels: selectedMateriels.map(materielId => {
+                    const materiel = materielsList.find(m => m.id === materielId);
+                    return { designation: materiel.designation };
+                })
             };
 
             await apiService.createIntervention(interventionData);
@@ -147,6 +166,34 @@ export default function CreateIntervention() {
                             </option>
                         ))}
                     </select>
+                </div>
+
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Matériels
+                    </label>
+                    <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
+                        {materielsList.length === 0 ? (
+                            <p className="text-gray-500 text-sm">Aucun matériel disponible</p>
+                        ) : (
+                            materielsList.map(materiel => (
+                                <label key={materiel.id} className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedMateriels.includes(materiel.id)}
+                                        onChange={() => handleMaterielChange(materiel.id)}
+                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                        {materiel.designation}
+                                    </span>
+                                </label>
+                            ))
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                        Sélectionnez les matériels à associer à cette intervention
+                    </p>
                 </div>
 
                 <div className="flex items-center justify-between">
