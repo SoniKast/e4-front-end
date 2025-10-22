@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function CreateProjet() {
     const [formData, setFormData] = useState({
         nom: "",
+        dureeTotale: "4", // Default value of 100 hours
         clientId: ""
     });
     const [clients, setClients] = useState([]);
@@ -41,6 +42,7 @@ export default function CreateProjet() {
         try {
             const projetData = {
                 nom: formData.nom,
+                dureeTotale: parseInt(formData.dureeTotale),
                 clientId: formData.clientId ? parseInt(formData.clientId) : null
             };
 
@@ -80,6 +82,22 @@ export default function CreateProjet() {
                     />
                 </div>
 
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dureeTotale">
+                        Durée totale (heures) *
+                    </label>
+                    <input
+                        type="number"
+                        id="dureeTotale"
+                        name="dureeTotale"
+                        value={formData.dureeTotale}
+                        onChange={handleChange}
+                        min="1"
+                        required
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                </div>
 
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="clientId">

@@ -31,6 +31,16 @@ const navigationItems = [
         icon: PersonIcon,
     },
     {
+        name: "Créer un client",
+        href: "/create-client",
+        icon: PersonIcon,
+    },
+    {
+        name: "Créer un matériel",
+        href: "/create-materiel",
+        icon: PlusIcon,
+    },
+    {
         name: "Planning salariés",
         href: "/employee-schedule",
         icon: CalendarIcon,

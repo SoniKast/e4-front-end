@@ -9,12 +9,11 @@ export default function CreateIntervention() {
         duree: "",
         projetId: "",
         salarieId: "",
-        materiels: []
+        materielId: ""
     });
     const [projets, setProjets] = useState([]);
     const [salaries, setSalaries] = useState([]);
     const [materielsList, setMaterielsList] = useState([]);
-    const [selectedMateriels, setSelectedMateriels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const router = useRouter();
@@ -47,15 +46,6 @@ export default function CreateIntervention() {
         }));
     };
 
-    const handleMaterielChange = (materielId) => {
-        setSelectedMateriels(prev => {
-            if (prev.includes(materielId)) {
-                return prev.filter(id => id !== materielId);
-            } else {
-                return [...prev, materielId];
-            }
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,10 +58,7 @@ export default function CreateIntervention() {
                 duree: parseInt(formData.duree),
                 projetId: parseInt(formData.projetId),
                 salarieId: parseInt(formData.salarieId),
-                materiels: selectedMateriels.map(materielId => {
-                    const materiel = materielsList.find(m => m.id === materielId);
-                    return { designation: materiel.designation };
-                })
+                materielId: formData.materielId ? parseInt(formData.materielId) : null
             };
 
             await apiService.createIntervention(interventionData);
@@ -169,31 +156,23 @@ export default function CreateIntervention() {
                 </div>
 
                 <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Matériels
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="materielId">
+                        Matériel
                     </label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
-                        {materielsList.length === 0 ? (
-                            <p className="text-gray-500 text-sm">Aucun matériel disponible</p>
-                        ) : (
-                            materielsList.map(materiel => (
-                                <label key={materiel.id} className="flex items-center space-x-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedMateriels.includes(materiel.id)}
-                                        onChange={() => handleMaterielChange(materiel.id)}
-                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                        {materiel.designation}
-                                    </span>
-                                </label>
-                            ))
-                        )}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                        Sélectionnez les matériels à associer à cette intervention
-                    </p>
+                    <select
+                        id="materielId"
+                        name="materielId"
+                        value={formData.materielId}
+                        onChange={handleChange}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option value="">Sélectionner un matériel</option>
+                        {materielsList.map(materiel => (
+                            <option key={materiel.id} value={materiel.id}>
+                                {materiel.designation}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="flex items-center justify-between">

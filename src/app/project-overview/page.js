@@ -54,8 +54,8 @@ export default function ProjectOverview() {
     };
 
     const getProgressPercentage = () => {
-        if (!timeSummary) return 0;
-        return Math.min(100, (timeSummary.totalTime / 100) * 100); // 100 hours total project duration
+        if (!timeSummary || !timeSummary.projectDuration) return 0;
+        return Math.min(100, (timeSummary.totalTime / timeSummary.projectDuration) * 100);
     };
 
     const getProgressColor = (percentage) => {
@@ -112,14 +112,10 @@ export default function ProjectOverview() {
                     {/* Project Summary Card */}
                     <div className="bg-white shadow-md rounded-lg p-6">
                         <h2 className="text-xl font-semibold mb-4">Résumé du Projet</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="bg-blue-50 p-4 rounded-lg">
                                 <h3 className="text-sm font-medium text-blue-800">Temps total passé</h3>
                                 <p className="text-2xl font-bold text-blue-900">{timeSummary.totalTime} heures</p>
-                            </div>
-                            <div className="bg-green-50 p-4 rounded-lg">
-                                <h3 className="text-sm font-medium text-green-800">Temps restant</h3>
-                                <p className="text-2xl font-bold text-green-900">{timeSummary.remainingTime} heures</p>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h3 className="text-sm font-medium text-gray-800">Nombre d'interventions</h3>
@@ -140,7 +136,7 @@ export default function ProjectOverview() {
                         <div className="flex justify-between text-sm text-gray-600">
                             <span>0h</span>
                             <span>{Math.round(getProgressPercentage())}%</span>
-                            <span>100h</span>
+                            <span>{timeSummary.projectDuration}h</span>
                         </div>
                     </div>
 

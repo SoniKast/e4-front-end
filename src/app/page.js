@@ -4,6 +4,7 @@ import { apiService } from "../services/api";
 
 export default function Dashboard() {
   const [interventions, setInterventions] = useState([]);
+  const [materielsByIntervention, setMaterielsByIntervention] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,6 +18,19 @@ export default function Dashboard() {
       const data = await apiService.getInterventions();
       setInterventions(data);
       setError(null);
+
+      // Récupérer les matériels pour chaque intervention
+      const materielsData = {};
+      for (const intervention of data) {
+        try {
+          const materiels = await apiService.getMaterielsByIntervention(intervention.id);
+          materielsData[intervention.id] = materiels;
+        } catch (err) {
+          console.error(`Erreur lors du chargement des matériels pour l'intervention ${intervention.id}:`, err);
+          materielsData[intervention.id] = [];
+        }
+      }
+      setMaterielsByIntervention(materielsData);
     } catch (err) {
       setError(err.message);
       console.error("Erreur lors du chargement des interventions:", err);
@@ -72,6 +86,9 @@ export default function Dashboard() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Salarié
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Matériels
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -88,6 +105,17 @@ export default function Dashboard() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {intervention.salarie ? `${intervention.salarie.prenom} ${intervention.salarie.nom}` : 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {materielsByIntervention[intervention.id]?.length > 0 ? (
+                      <ul className="list-disc list-inside">
+                        {materielsByIntervention[intervention.id].map(materiel => (
+                          <li key={materiel.id}>{materiel.designation}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'Aucun matériel'
+                    )}
                   </td>
                 </tr>
               ))}

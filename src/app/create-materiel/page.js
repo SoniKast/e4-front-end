@@ -5,27 +5,11 @@ import { useRouter } from "next/navigation";
 
 export default function CreateMateriel() {
     const [formData, setFormData] = useState({
-        designation: "",
-        interventionId: ""
+        designation: ""
     });
-    const [interventions, setInterventions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const router = useRouter();
-
-    useEffect(() => {
-        fetchInterventions();
-    }, []);
-
-    const fetchInterventions = async () => {
-        try {
-            const interventionsData = await apiService.getInterventions();
-            setInterventions(interventionsData);
-        } catch (err) {
-            setError("Erreur lors du chargement des interventions");
-            console.error("Erreur:", err);
-        }
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -42,8 +26,7 @@ export default function CreateMateriel() {
 
         try {
             const materielData = {
-                designation: formData.designation,
-                interventionId: parseInt(formData.interventionId)
+                designation: formData.designation
             };
 
             await apiService.createMateriel(materielData);
@@ -82,26 +65,6 @@ export default function CreateMateriel() {
                     />
                 </div>
 
-                <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="interventionId">
-                        Intervention associée
-                    </label>
-                    <select
-                        id="interventionId"
-                        name="interventionId"
-                        value={formData.interventionId}
-                        onChange={handleChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    >
-                        <option value="">Sélectionner une intervention</option>
-                        {interventions.map(intervention => (
-                            <option key={intervention.id} value={intervention.id}>
-                                Intervention #{intervention.id} - {new Date(intervention.date).toLocaleDateString()} - {intervention.duree}h
-                            </option>
-                        ))}
-                    </select>
-                </div>
 
                 <div className="flex items-center justify-between">
                     <button
