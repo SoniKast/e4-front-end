@@ -1,15 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiService } from "../../services/api";
 import { useRouter } from "next/navigation";
 
 export default function CreateProjet() {
     const [formData, setFormData] = useState({
-        nom: ""
+        nom: "",
+        clientId: ""
     });
+    const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const clientsData = await apiService.getClients();
+                setClients(clientsData);
+            } catch (err) {
+                console.error("Erreur lors du chargement des clients:", err);
+            }
+        };
+        fetchClients();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,7 +40,8 @@ export default function CreateProjet() {
 
         try {
             const projetData = {
-                nom: formData.nom
+                nom: formData.nom,
+                clientId: formData.clientId ? parseInt(formData.clientId) : null
             };
 
             await apiService.createProjet(projetData);
@@ -65,6 +80,26 @@ export default function CreateProjet() {
                     />
                 </div>
 
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="clientId">
+                        Client
+                    </label>
+                    <select
+                        id="clientId"
+                        name="clientId"
+                        value={formData.clientId}
+                        onChange={handleChange}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option value="">Sélectionner un client</option>
+                        {clients.map((client) => (
+                            <option key={client.id} value={client.id}>
+                                {client.nom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
                 <div className="flex items-center justify-between">
                     <button
